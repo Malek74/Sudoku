@@ -1,0 +1,307 @@
+Module Program
+	Dim mistakes As Integer=0
+	
+	Structure grid
+		Dim value As Integer
+		Dim constant As Boolean
+		
+	End Structure
+		Dim mygrid(9,9) As grid
+		Sub Main()
+			Dim clmn,row,choice As Integer	
+			Dim checkSlot As Boolean=False
+			
+	start(mygrid,loading())
+	update()
+	Dim win As Boolean=False
+	'Main Game loop
+	While(win=False)
+		
+	        checkSlot=False
+	        'Loop validates input for column and row
+			While(checkSlot=False)
+	              row=checkNum("ROW")
+	              update()
+		          clmn=checkNum("COLUMN")
+			      update()
+			      checkSlot=checkEmpty(clmn,row)
+	        End While
+	
+	        choice=checkNum("YOUR CHOICE")
+	
+	        mygrid(row,clmn).value=choice
+	        update()
+
+	        If(fullGrid()=True) Then
+		        If(checkGrid=True And checkColumn=True And checkRow=True) Then
+			         win=True
+			         Console.WriteLine("CONGRATULATIONS YOU WIN!")
+			         Else
+		            Console.WriteLine("THERE ARE MISTAKES IN YOUR SOLUTION TRY MODIFYING IT")
+	            End If
+		    End If
+	End While
+		Console.Write("Press any key to continue . . . ")
+		Console.ReadKey(True)
+End Sub
+
+
+'Prompts user to choose difficulty and a level 
+Function loading () As String
+	Dim levelNum As Integer
+		Dim difficult As Integer
+Dim levels() As String={"ONE","TWO","THREE","FOUR","FIVE"}
+While(difficult <1 Or difficult>4)
+	Try
+	Console.WriteLine("1: EASY")
+	Console.WriteLine("2: MEDIUM")
+	Console.WriteLine("3: HARD")
+	Console.WriteLine("4: EXPERT")
+	Console.WriteLine("")
+	Console.WriteLine("CHOOSE THE DIFFICULTY NUMBER (1-4):")
+	
+	difficult=Console.ReadLine()
+	Console.Clear()
+	Catch ex As InvalidCastException
+		Console.Clear()
+		
+		Console.WriteLine("WRONG TYPE INPUT ENTER A NUMBER")
+		Console.WriteLine("")
+		End Try
+	End While
+	'opens file corresponding to selected difficulty
+	Select Case difficult
+		Case 1:FileOpen(1,"C:\Malek\CS\Projects\Sudoku\Easy.txt", OpenMode.Input)
+		Case 2:FileOpen(1,"C:\Malek\CS\Projects\Sudoku\Medium.txt", OpenMode.Input)
+		Case 3:FileOpen(1,"C:\Malek\CS\Projects\Sudoku\Hard.txt", OpenMode.Input)
+		Case 4:FileOpen(1,"C:\Malek\CS\Projects\Sudoku\Expert.txt", OpenMode.Input)	
+	End Select
+
+levelNum=5
+While(levelNum>4 Or levelNum<0)
+	Try	
+For i=1 To 5
+	Console.WriteLine("LEVEL " & i)
+Next
+
+Console.WriteLine("")
+Console.WriteLine("ENTER LEVEL NUMBER (1-5):")
+levelNum=Console.ReadLine()-1
+
+Catch ex As InvalidCastException
+Console.Clear()	
+Console.WriteLine("WRONG TYPE INPUT ENTER A NUMBER:")
+Console.WriteLine("")
+End Try
+End While
+Return levels(levelNum)
+
+End Function
+
+'intialises grid values at start of game
+Sub start(ByRef grid(,) As grid,byval level As string)
+Dim line As String
+	While(Not EOF(1))
+		Input(1,line)
+		If(line=level) Then		
+			For i=1 To 9
+				For j=1 To 9
+					Input(1,grid(i,j).value)
+					If(grid(i,j).value<>0) Then
+						grid(i,j).constant=True
+						
+					Else
+						grid(i,j).constant=False
+					End If
+				Next
+				
+			Next
+		End If
+
+	End While
+	FileClose(1)
+End Sub
+
+'updates grid after every turn
+Sub update()
+	Console.Clear()
+		Console.ForegroundColor=ConsoleColor.Blue
+		Console.Write(" |")
+		For i=1 To 9
+			Console.Write(" " & i & " |")
+		Next
+		Console.WriteLine("")
+		Console.WriteLine("  ------------------------------------")
+		Console.ResetColor()
+
+			For i=1 To 9
+				Console.ForegroundColor=ConsoleColor.Blue
+				Console.Write(i & "| ")
+				Console.ResetColor()
+				For j=1 To 9
+					If(mygrid(i,j).value<>0) Then
+
+					If(j=3 Or j=6 ) Then
+					Console.Write(mygrid(i,j).value )
+					Console.ForegroundColor=Consolecolor.Red
+					Console.Write(" | ")
+					Console.ResetColor
+					
+					Else If(j=9) Then
+					Console.Write(mygrid(i,j).value)
+					Console.ForegroundColor=Consolecolor.blue
+					Console.Write(" | ")
+					Console.ResetColor
+					
+					Else
+					Console.Write(mygrid(i,j).value & " | ")
+					End If
+					Else
+					If(j=3 Or j=6 ) Then
+					Console.ForegroundColor=Consolecolor.Red
+					Console.Write("  | ")
+					Console.ResetColor
+					
+					Else If(j=9) Then
+
+					Console.ForegroundColor=Consolecolor.blue
+					Console.Write("  | ")
+					Console.ResetColor
+					
+					Else
+					Console.Write(  "  | ")
+		
+					End If
+					End If
+				Next
+				Console.WriteLine("")
+				If(i=3 Or i=6) Then
+					Console.ForegroundColor=ConsoleColor.Blue
+					Console.Write("--")
+					Console.ForegroundColor=ConsoleColor.Red
+					Console.WriteLine("------------------------------------")
+					Console.ResetColor()
+					
+				Else If(i=9)
+					Console.ForegroundColor=ConsoleColor.Blue
+					Console.WriteLine("--------------------------------------")
+					Console.ResetColor()
+
+				Else
+					Console.ForegroundColor=ConsoleColor.Blue
+					Console.Write("--")
+					Console.ResetColor()
+					Console.WriteLine("------------------------------------")
+				End If
+			Next
+End Sub
+
+'validates input of use (column,row or choice)
+Function checkNum ( byval type As string) As Integer
+	Dim check As Integer
+	Dim num As Integer
+
+	While(check<>1)
+		Try
+			Console.WriteLine("")
+	Console.WriteLine("ENTER " & type & " NUMBER")
+	num=Console.ReadLine()
+	check=check+1
+	If(num>9 Or num<1) Then
+		update()
+		Console.WriteLine("ENTER A NUMBER BETWEEN 1 & 9")
+		check=0
+	End If
+		Catch ex As InvalidCastException
+			check=0
+			update()
+			Console.WriteLine("WRONG TYPE INPUT ENTER A NUMBER")
+		End Try
+	End While
+	Return num
+
+End Function
+
+'checks wether slot was pre-filled by user or not
+Function checkEmpty(ByVal colmn As Integer, ByVal row As Integer) As Boolean
+	If(mygrid(row,colmn).constant=True) Then
+		Console.WriteLine("CANNOT CHANGE A PRE-FILLED SLOT")
+		Return False
+		
+	End If
+	Return True
+End Function
+
+'checks wether grid is full or not
+Function fullGrid() As Boolean
+	For i=1 To 9
+		For j=1 To 9
+			If(mygrid(i,j).value=0) Then
+				Return False
+			End If
+		Next
+	Next
+	Return True
+	
+End Function
+
+'checks for mistakes in 3x3 grids
+function checkGrid() As Boolean
+	Dim sum As Integer
+	
+	Dim clmnStart As Integer=1
+	Dim rowStart As Integer=1
+	While(rowStart<8)
+	For i=rowStart To rowStart+2
+		For j=clmnStart To clmnStart+2
+			sum=sum+mygrid(i,j).value
+		Next
+	Next
+	If(sum<>45) Then
+			Return False
+		End If
+		If(clmnStart=7) Then
+			clmnStart=1
+			rowStart=rowStart+3
+		Else
+			clmnStart=clmnStart+3
+		End If
+		sum=0
+	End While
+	Return True
+	
+End Function
+
+'check for mistakes in columns
+Function checkColumn() As Boolean
+	Dim sum As Integer=0
+	For i=1 To 9
+		For j=1 To 9
+			sum=sum+mygrid(j,i).value
+		Next
+		If(sum<>45) Then 
+			Return False
+		End If
+		sum=0
+	Next
+	Return True
+	
+End Function
+
+'checks for mistakes in rows
+Function checkRow() As Boolean
+	Dim sum As Integer=0
+	For i=1 To 9
+		For j=1 To 9
+			sum=sum+mygrid(i,j).value
+		Next
+		If(sum<>45) Then 
+			Return False
+		End If
+		sum=0
+	Next
+	Return True
+	
+End Function
+
+End Module

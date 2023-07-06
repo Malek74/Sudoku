@@ -1,0 +1,6 @@
+-Allows user to choose from 4 difficulty mode
+-Each difficulty mode contains 5 levels to complete
+-Gives user freedom of playing and just checks after he fills the grid
+-validates user's input
+-allows user to change his pre-assigned input to correct mistakes
+

@@ -1,0 +1,5 @@
+C:\Malek\CS\Projects\Sudoku\bin\Debug\Sudoku.exe
+C:\Malek\CS\Projects\Sudoku\bin\Debug\Sudoku.pdb
+C:\Malek\CS\Projects\Sudoku\obj\Debug\Sudoku.vbprojResolveAssemblyReference.cache
+C:\Malek\CS\Projects\Sudoku\obj\Debug\Sudoku.exe
+C:\Malek\CS\Projects\Sudoku\obj\Debug\Sudoku.pdb
